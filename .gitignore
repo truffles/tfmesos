@@ -2,6 +2,7 @@
 *.py[co]
 *.swp
 .tox/
+*.gz
 build/
 dist/
 venv/
