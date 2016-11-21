@@ -25,6 +25,7 @@ import numpy
 from six.moves import urllib
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
+#from tensorflow.python.lib.io.file_io import FileIO
 
 SOURCE_URL = 'http://yann.lecun.com/exdb/mnist/'
 
@@ -37,7 +38,7 @@ def maybe_download(filename, work_directory):
   if not tf.gfile.Exists(filepath):
     filepath, _ = urllib.request.urlretrieve(SOURCE_URL + filename, filepath)
     with tf.gfile.GFile(filepath) as f:
-      size = f.Size()
+      size = f.size()
     print('Successfully downloaded', filename, size, 'bytes.')
   return filepath
 
@@ -50,7 +51,7 @@ def _read32(bytestream):
 def extract_images(filename):
   """Extract the images into a 4D uint8 numpy array [index, y, x, depth]."""
   print('Extracting', filename)
-  with tf.gfile.Open(filename, 'rb') as f, gzip.GzipFile(fileobj=f) as bytestream:
+  with gzip.open(filename, 'rb') as bytestream:
     magic = _read32(bytestream)
     if magic != 2051:
       raise ValueError(
@@ -77,7 +78,7 @@ def dense_to_one_hot(labels_dense, num_classes=10):
 def extract_labels(filename, one_hot=False):
   """Extract the labels into a 1D uint8 numpy array [index]."""
   print('Extracting', filename)
-  with tf.gfile.Open(filename, 'rb') as f, gzip.GzipFile(fileobj=f) as bytestream:
+  with gzip.open(filename, 'rb') as bytestream:
     magic = _read32(bytestream)
     if magic != 2049:
       raise ValueError(
